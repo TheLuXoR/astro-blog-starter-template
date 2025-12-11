@@ -134,6 +134,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
             daysEl.textContent = `${days} Tage <br/>${hours} Stunden <br/>${minutes} Minuten`;
 
             if (paramName && paramName.trim() !== "") {
+				daysEl.textContent = `${days} Tage`;
                 const safeName = formatName(paramName);
                 compareEl.textContent = 
                     `und damit ${days} Tage, ${hours} Stunden und ${minutes} Minuten mehr Elternerfahrung als ${safeName}`;
