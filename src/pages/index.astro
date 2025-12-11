@@ -9,38 +9,101 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 <html lang="en">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+
+<style>
+        :root {
+            --bg: #f2f4f7;
+            --card-bg: #ffffff;
+            --text: #1c1c1c;
+            --accent: #4a6cf7;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 36px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            width: min(90%, 360px);
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .days-value {
+            font-size: 56px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 10px;
+        }
+
+        .error {
+            color: #c62828;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+    </style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<div class="card">
+<div class="container">
     <div class="title">Baby-Alter</div>
-    <div id="birthday"></div>
     <div>Alter in Tagen:</div>
-    <div id="days" class="days"></div>
+    <div id="days" class="days-value">–</div>
+	<div id="days2" class="days-value">und damit </div>
+    <div id="error" class="error"></div>
 </div>
 
-<script>
-    function getParam(name) {
-        return new URLSearchParams(window.location.search).get(name);
-    }
 
-    const param = getParam("birthday"); // erwartet YYYY-MM-DD
-    if (!param) {
-        document.getElementById("birthday").textContent = "Kein Datum übergeben.";
-        document.getElementById("days").textContent = "-";
-    } else {
-        const birthday = new Date(param);
-        const today = new Date();
-
-        const diffMs = today - birthday;
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-        document.getElementById("birthday").textContent = "Geburtstag: " + param;
-        document.getElementById("days").textContent = diffDays;
-    }
-</script>
 		</main>
 		<Footer />
+<script>
+    const url = new URLSearchParams(window.location.search);
+    const param = url.get("birthday");   // erwartet YYYY-MM-DD
+
+    const birthdayEl = document.getElementById("birthday");
+    const daysEl = document.getElementById("days");
+    const errorEl = document.getElementById("error");
+
+    if (!param) {
+        birthdayEl.textContent = "Kein Datum übergeben.";
+        daysEl.textContent = "–";
+    } else {
+        const birthday = new Date(param);
+        if (isNaN(birthday.getTime())) {
+            birthdayEl.textContent = "Ungültiges Datum.";
+            errorEl.textContent = "Format: YYYY-MM-DD";
+        } else {
+            const today = new Date();
+            const diffMs = today - birthday;
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+            birthdayEl.textContent = "Geburtstag: " + param;
+            daysEl.textContent = diffDays;
+        }
+    }
+</script>
 	</body>
 </html>
