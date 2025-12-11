@@ -84,6 +84,12 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 </div>
 
 <script>
+
+	function formatName(name) {
+    	const clean = name.trim();
+    	if (clean.length === 0) return "";
+    	return clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase();
+	}
     const url = new URLSearchParams(window.location.search);
 
     const paramBirthday = url.get("birthday");  // YYYY-MM-DD
@@ -112,9 +118,10 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
             // Zusatztext nur wenn Name existiert und sinnvoll ist
             if (paramName && paramName.trim() !== "") {
-                compareEl.textContent = 
-                    "und damit " + diffDays + " Tage mehr Elternerfahrung als " + paramName;
-            }
+    			const safeName = formatName(paramName);
+    			compareEl.textContent =
+        		"und damit " + diffDays + " Tage mehr Elternerfahrung als " + safeName;
+			}
         }
     }
 </script>
