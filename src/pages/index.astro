@@ -66,19 +66,14 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
     </style>
 	</head>
 	<body>
-		<Header />
-		<main>
+
 <div class="container">
     <div class="title">Baby-Alter</div>
     <div>Alter in Tagen:</div>
     <div id="days" class="days-value">–</div>
-	<div id="days2" class="days-value">und damit </div>
     <div id="error" class="error"></div>
 </div>
 
-
-		</main>
-		<Footer />
 <script>
     const url = new URLSearchParams(window.location.search);
     const param = url.get("birthday");   // erwartet YYYY-MM-DD
