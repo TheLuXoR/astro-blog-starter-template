@@ -84,44 +84,58 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 </div>
 
 <script>
-
-	function formatName(name) {
-    	const clean = name.trim();
-    	if (clean.length === 0) return "";
-    	return clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase();
-	}
     const url = new URLSearchParams(window.location.search);
 
-    const paramBirthday = url.get("birthday");  // YYYY-MM-DD
-    const paramName = url.get("name");          // optional
+    const paramBirthday = url.get("birthday"); // YYYY-MM-DD
+    const paramTime = url.get("time");         // HH:MM optional
+    const paramName = url.get("name");         // optional
 
     const birthdayEl = document.getElementById("birthday");
     const daysEl = document.getElementById("days");
     const compareEl = document.getElementById("compare");
     const errorEl = document.getElementById("error");
 
+    function formatName(name) {
+        const clean = name.trim();
+        if (clean.length === 0) return "";
+        return clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase();
+    }
+
     if (!paramBirthday) {
         birthdayEl.textContent = "Kein Datum übergeben.";
         daysEl.textContent = "–";
     } else {
-        const birthday = new Date(paramBirthday);
+        let birthdayStr = paramBirthday;
+        let hour = 0, minute = 0;
+
+        if (paramTime) {
+            const timeMatch = paramTime.match(/^(\d{1,2}):(\d{1,2})$/);
+            if (timeMatch) {
+                hour = parseInt(timeMatch[1], 10);
+                minute = parseInt(timeMatch[2], 10);
+                birthdayStr += " " + paramTime;
+            }
+        }
+
+        const [year, month, day] = paramBirthday.split("-").map(Number);
+        const birthday = new Date(year, month - 1, day, hour, minute);
+
         if (isNaN(birthday.getTime())) {
-            birthdayEl.textContent = "Ungültiges Datum.";
-            errorEl.textContent = "Format: YYYY-MM-DD";
+            birthdayEl.textContent = "Ungültiges Datum oder Zeit.";
+            errorEl.textContent = "Format: YYYY-MM-DD und HH:MM optional";
         } else {
-            const today = new Date();
-            const diffMs = today - birthday;
+            const now = new Date();
+            const diffMs = now - birthday;
             const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-            birthdayEl.textContent = "Geburtstag: " + paramBirthday;
+            birthdayEl.textContent = "Geburtstag: " + birthdayStr;
             daysEl.textContent = diffDays;
 
-            // Zusatztext nur wenn Name existiert und sinnvoll ist
             if (paramName && paramName.trim() !== "") {
-    			const safeName = formatName(paramName);
-    			compareEl.textContent =
-        		"und damit " + diffDays + " Tage mehr Elternerfahrung als " + safeName;
-			}
+                const safeName = formatName(paramName);
+                compareEl.textContent = 
+                    "und damit " + diffDays + " Tage mehr Elternerfahrung als " + safeName;
+            }
         }
     }
 </script>
