@@ -131,14 +131,26 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
             const minutes = totalMinutes - days * 24 * 60 - hours * 60;
 
             birthdayEl.textContent = "Geburtstag: " + paramBirthday + (paramTime ? " " + paramTime : "");
-            daysEl.textContent = `${days} Tage <br/>${hours} Stunden <br/>${minutes} Minuten`;
-
-            if (paramName && paramName.trim() !== "") {
+            daysEl.textContent = ""; // clear previous
+			if (paramName && paramName.trim() !== "") {
 				daysEl.textContent = `${days} Tage`;
                 const safeName = formatName(paramName);
                 compareEl.textContent = 
                     `und damit ${days} Tage, ${hours} Stunden und ${minutes} Minuten mehr Elternerfahrung als ${safeName}`;
-            }
+            } else {
+				const dayLine = document.createElement("div");
+				dayLine.textContent = `${days} Tage`;
+				const hourLine = document.createElement("div");
+				hourLine.textContent = `${hours} Stunden`;
+				const minLine = document.createElement("div");
+				minLine.textContent = `${minutes} Minuten`;
+				
+				daysEl.appendChild(dayLine);
+				daysEl.appendChild(hourLine);
+				daysEl.appendChild(minLine);
+			}
+
+            
         }
     }
 </script>
