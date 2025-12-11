@@ -77,7 +77,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 <div class="container">
     <div class="title">Baby-Alter</div>
     <div id="birthday" class="subtitle"></div>
-    <div>Alter in Tagen:</div>
+    <div>Alter:</div>
     <div id="days" class="days-value">–</div>
     <div id="compare" class="compare-text"></div>
     <div id="error" class="error"></div>
@@ -105,7 +105,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
         birthdayEl.textContent = "Kein Datum übergeben.";
         daysEl.textContent = "–";
     } else {
-        let birthdayStr = paramBirthday;
         let hour = 0, minute = 0;
 
         if (paramTime) {
@@ -113,7 +112,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
             if (timeMatch) {
                 hour = parseInt(timeMatch[1], 10);
                 minute = parseInt(timeMatch[2], 10);
-                birthdayStr += " " + paramTime;
             }
         }
 
@@ -125,16 +123,20 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
             errorEl.textContent = "Format: YYYY-MM-DD und HH:MM optional";
         } else {
             const now = new Date();
-            const diffMs = now - birthday;
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            let diffMs = now - birthday;
 
-            birthdayEl.textContent = "Geburtstag: " + birthdayStr;
-            daysEl.textContent = diffDays;
+            const totalMinutes = Math.floor(diffMs / (1000 * 60));
+            const days = Math.floor(totalMinutes / (60 * 24));
+            const hours = Math.floor((totalMinutes - days * 24 * 60) / 60);
+            const minutes = totalMinutes - days * 24 * 60 - hours * 60;
+
+            birthdayEl.textContent = "Geburtstag: " + paramBirthday + (paramTime ? " " + paramTime : "");
+            daysEl.textContent = `${days} Tage ${hours} Stunden ${minutes} Minuten`;
 
             if (paramName && paramName.trim() !== "") {
                 const safeName = formatName(paramName);
                 compareEl.textContent = 
-                    "und damit " + diffDays + " Tage mehr Elternerfahrung als " + safeName;
+                    `und damit ${days} Tage mehr Elternerfahrung als ${safeName}`;
             }
         }
     }
